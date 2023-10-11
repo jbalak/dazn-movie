@@ -1,8 +1,14 @@
+import Boom from "@hapi/boom";
+
 import { moviesDb } from "../dataAccess";
-import { Movie } from "../types/movies";
+import { Movie as MovieType } from "../types/movies";
+import { isDef } from "../utils";
 
 const createAMovie = async (data: any) => {
-  const moviewData: Movie = data.body;
+  const moviewData: MovieType = data.body;
+
+  validateReq(moviewData);
+
   const movies = await moviesDb.insert(moviewData);
 
   return { movies };
@@ -46,6 +52,18 @@ const deleteAMovie = async (data: any) => {
   const movies = await moviesDb.remove({ _id: movieId });
 
   return { deleted: movies };
+};
+
+//VALIATION
+const validateReq = (reqData: MovieType) => {
+  let data = ["title", "genre", "link", "rating"];
+  console.log({ reqData });
+  let keys = Object.keys(reqData);
+  let ans = data.forEach((d) => {
+    if (keys.includes(d)) {
+      return true;
+    } else throw Boom.badData(`${d} is missing`);
+  });
 };
 
 export {

@@ -1,4 +1,5 @@
 type Movie = {
+  _id?: string;
   title: string;
   genre: string;
   rating: number;
